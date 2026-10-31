@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JAGBA for Mac</title>
+<meta name="description" content="Save just the part you need: a clip, the audio, a transcript, or a whole Instagram post. Free for Mac.">
+<meta property="og:title" content="JAGBA for Mac">
+<meta property="og:description" content="Save just the part you need: a clip, the audio, a transcript, or a whole post.">
+<meta property="og:image" content="screenshot.png">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #A8392A; --bone: #D9CBB8; --bright: #EDE2D3; --butter: #D2B48C; --brass: #8A6633;
+  --soot: #1E1C1A; --page: #161513; --raised: #24211E; --muted: #8F8373; --ink: #221E1A;
+  --line: rgba(217, 203, 184, 0.11);
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  --mono: "Courier Prime", "Courier New", ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--page); }
+body { margin: 0; background: var(--page); color: var(--bone); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--butter); }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* Hero */
+.hero { text-align: center; padding: 72px 0 36px; }
+.hero img.mark { width: min(340px, 78vw); height: auto; display: block; margin: 0 auto 22px; }
+.hero h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 600; color: var(--bright); margin: 0 0 10px; letter-spacing: -.01em; }
+.hero p { color: var(--muted); margin: 0 auto 28px; max-width: 560px; }
+.download { display: inline-block; background: var(--red); color: #F6E9DA; text-decoration: none; font-weight: 600; font-size: 17px;
+  padding: 14px 30px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+.download:hover { filter: brightness(1.08); }
+.meta { margin-top: 14px; font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.notice { display: none; margin: 16px auto 0; max-width: 520px; font-size: 13px; color: var(--butter); }
+.phone { display: none; margin: 0 auto 26px; max-width: 460px; background: var(--raised); border-radius: 10px; padding: 16px 18px; text-align: left; }
+.phone b { color: var(--bright); }
+.phone p { margin: 4px 0 12px; font-size: 14px; color: var(--muted); }
+.phone button { font: 600 14px var(--sans); color: var(--ink); background: var(--butter); border: 0; border-radius: 6px; padding: 9px 16px; cursor: pointer; }
+
+.shot { margin: 30px 0 64px; }
+.shot img { width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 0 0 1px rgba(217,203,184,.08), 0 30px 60px rgba(0,0,0,.5); }
+
+section { padding: 0 0 56px; }
+h2 { font-size: 22px; font-weight: 600; color: var(--bright); margin: 6px 0 18px; }
+
+/* Features */
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--line); }
+.feature { padding: 18px 18px 18px 0; border-bottom: 1px solid var(--line); }
+.feature b { display: flex; align-items: center; gap: 9px; color: var(--bright); font-weight: 600; margin-bottom: 4px; }
+.feature span { color: var(--muted); font-size: 15px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+
+/* Steps */
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.steps li { display: grid; grid-template-columns: 44px 1fr; gap: 6px 14px; padding: 18px 0; border-top: 1px solid var(--line); }
+.steps li::before { counter-increment: step; content: "0" counter(step); font-family: var(--mono); color: var(--butter); font-size: 15px; padding-top: 2px; }
+.steps h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; color: var(--bright); }
+.steps p { margin: 0 0 8px; color: var(--muted); }
+.path { font-family: var(--mono); font-size: 14px; color: var(--bone); background: var(--raised); padding: 1px 6px; border-radius: 4px; }
+.tip { font-size: 14px; border-left: 2px solid var(--butter); padding-left: 12px; color: var(--bone); margin-top: 8px; }
+
+/* Logins table */
+.browsers { width: 100%; border-collapse: collapse; font-size: 15px; }
+.browsers td { padding: 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.browsers td:first-child { color: var(--bright); width: 34%; }
+.browsers td:last-child { color: var(--muted); }
+
+details { border-top: 1px solid var(--line); padding: 14px 0; }
+details summary { cursor: pointer; color: var(--bright); font-weight: 500; list-style: none; }
+details summary::before { content: "+"; font-family: var(--mono); color: var(--butter); display: inline-block; width: 22px; }
+details[open] summary::before { content: "–"; }
+details p { color: var(--muted); margin: 8px 0 0 22px; }
+
+.small { font-size: 14px; color: var(--muted); }
+footer { border-top: 1px solid var(--line); padding: 26px 0 60px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 640px) {
+  .hero { padding-top: 48px; }
+  .features { grid-template-columns: 1fr; }
+  .browsers td:first-child { width: 42%; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <img class="mark" src="wordmark.svg" alt="JAGBA">
+    <h1>Save just the part you need.</h1>
+    <p>A clip from an hour-long video, just the audio, a transcript you can quote, or every slide of an Instagram post. Free, for Mac.</p>
+    <div class="phone" id="phone">
+      <b>You're on your phone.</b>
+      <p>JAGBA is a Mac app. Send this page to yourself (or AirDrop it to your Mac) and open it there.</p>
+      <button id="share" type="button">Share this link</button>
+    </div>
+    <a class="download" id="download" href="#">Download for Mac</a>
+    <div class="meta">macOS 14 or newer · Apple Silicon and Intel · <span id="version">latest version</span></div>
+    <p class="notice" id="notice">Preview copy: the download button works once this page is published on GitHub Pages.</p>
+  </header>
+
+  <div class="shot"><img src="screenshot.png" alt="JAGBA with a YouTube video loaded and a 30-second clip selected on the timeline"></div>
+
+  <section>
+    <div class="label">What it does</div>
+    <h2>One link, four ways to save it</h2>
+    <div class="features">
+      <div class="feature"><b><span class="dot" style="background:var(--bone)"></span>Clips</b><span>Drag two handles and JAGBA downloads only that section, not the whole video.</span></div>
+      <div class="feature"><b><span class="dot" style="background:var(--brass)"></span>Audio</b><span>MP3 or M4A, of the whole video or just your clip.</span></div>
+      <div class="feature"><b><span class="dot" style="background:var(--butter)"></span>Transcripts</b><span>A .txt to quote and an .srt for subtitles, from YouTube captions or made privately on your Mac.</span></div>
+      <div class="feature"><b><span class="dot" style="box-shadow:inset 0 0 0 1.5px var(--bone)"></span>Whole posts</b><span>Every photo and video in an Instagram carousel or TikTok slideshow, in order.</span></div>
+    </div>
+    <p class="small" style="margin-top:14px">Works with YouTube, TikTok, Instagram, X, Vimeo and many more. Paste several links at once to save them all.</p>
+  </section>
+
+  <section>
+    <div class="label">Install</div>
+    <h2>Three steps, once</h2>
+    <ol class="steps">
+      <li><div>
+        <h3>Download and move it to Applications</h3>
+        <p>Open the downloaded zip, then drag <b>JAGBA</b> into your <b>Applications</b> folder.</p>
+      </div></li>
+      <li><div>
+        <h3>Allow it to open</h3>
+        <p>JAGBA isn't from the App Store, so the first time you open it macOS says it can't verify it. Click <b>Done</b>, then:</p>
+        <p>Open <span class="path">System Settings › Privacy &amp; Security</span>, scroll down to the message about JAGBA, click <b>Open Anyway</b>, enter your password, and click <b>Open</b>.</p>
+        <p class="tip">You only do this once. After that, JAGBA opens like any other app.</p>
+      </div></li>
+      <li><div>
+        <h3>Let it set up</h3>
+        <p>On first launch JAGBA downloads its download engine (yt-dlp). If it offers <b>Install ffmpeg</b> or <b>Install Deno</b>, click them: ffmpeg cuts clips and makes transcripts, Deno is needed for YouTube. Every tool is checked against its official checksum before it's installed.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="label">Logins</div>
+    <h2>Private posts and Instagram</h2>
+    <p class="small">Public videos need no login. When a site asks for one (Instagram usually does), JAGBA borrows the login from a browser you choose under <b>Change</b>. It never sees your password, and it's only used when a site asks.</p>
+    <table class="browsers">
+      <tr><td>Opera, Vivaldi, Firefox, Brave, Edge</td><td>Usually work right away. Just log in to the site in that browser first.</td></tr>
+      <tr><td>Chrome, Safari</td><td>macOS protects their logins. Allow JAGBA under <span class="path">Privacy &amp; Security › Full Disk Access</span>, then reopen JAGBA. This lets JAGBA read all your files, so only do it if you're comfortable with that.</td></tr>
+      <tr><td>If macOS asks about “Safe Storage”</td><td>Click <b>Allow</b>, not Always Allow, so nothing can read your logins silently later.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="label">Questions</div>
+    <h2>Good to know</h2>
+    <details><summary>Does it work on Windows or iPhone?</summary><p>No, JAGBA is Mac only for now (macOS 14 Sonoma or newer).</p></details>
+    <details><summary>Is it free?</summary><p>Yes. No account, no ads, no tracking.</p></details>
+    <details><summary>A site stopped working</summary><p>Sites change often. Click <b>Update</b> next to the yt-dlp version at the top of the window. JAGBA also checks for engine updates every day, and tells you when a new version of JAGBA itself is out.</p></details>
+    <details><summary>Is it safe? What does it send?</summary><p>Nothing leaves your Mac except the requests to the sites you download from. Transcripts are made on your Mac. The source code is public, so anyone can check what it does.</p></details>
+    <details><summary>What can I use it for?</summary><p>JAGBA is made for research, teaching and quoting: saving the part of a video you want to reference. Respect copyright and each platform's rules, and don't re-post other people's work as your own.</p></details>
+  </section>
+
+  <footer>
+    <span>JAGBA · built on yt-dlp, ffmpeg and gallery-dl · fonts: Ojuju and Courier Prime (OFL)</span>
+    <a id="source" href="#">Source code on GitHub</a>
+  </footer>
+</main>
+
+<script>
+// On GitHub Pages this page lives at <owner>.github.io/<repo>/, so the
+// download link and version can be worked out from the address.
+(function () {
+  // Visitors from Instagram are usually on a phone: offer to send the link on.
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    document.getElementById("phone").style.display = "block";
+    const btn = document.getElementById("share");
+    btn.onclick = async () => {
+      try {
+        if (navigator.share) await navigator.share({ title: "JAGBA for Mac", url: location.href });
+        else { await navigator.clipboard.writeText(location.href); btn.textContent = "Link copied"; }
+      } catch (e) {}
+    };
+  }
+})();
+(function () {
+  const host = location.hostname, parts = location.pathname.split("/").filter(Boolean);
+  if (!host.endsWith(".github.io") || !parts.length) {
+    document.getElementById("notice").style.display = "block";
+    return;
+  }
+  const repo = host.split(".")[0] + "/" + parts[0];
+  document.getElementById("download").href = "https://github.com/" + repo + "/releases/latest/download/JAGBA-mac.zip";
+  document.getElementById("source").href = "https://github.com/" + repo;
+  fetch("https://api.github.com/repos/" + repo + "/releases/latest")
+    .then(r => r.ok ? r.json() : null)
+    .then(r => { if (r && r.tag_name) document.getElementById("version").textContent = "version " + r.tag_name.replace(/^v/, ""); })
+    .catch(() => {});
+})();
+</script>
+</body>
+</html>
