@@ -6,6 +6,12 @@ enum Paths {
     /// copies of yt-dlp, ffmpeg, deno and a private Python for gallery-dl.
     static let bin: URL = {
         let fm = FileManager.default
+        // For testing: JAGBA_HOME points the tools folder somewhere else.
+        if let home = ProcessInfo.processInfo.environment["JAGBA_HOME"] {
+            let dir = URL(fileURLWithPath: home).appendingPathComponent("bin", isDirectory: true)
+            try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
+            return dir
+        }
         let base = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         // The app used to be called Excerpt: keep the tools it already downloaded.
         let old = base.appendingPathComponent("Excerpt"), new = base.appendingPathComponent("JAGBA")
@@ -295,7 +301,41 @@ final class Tools: ObservableObject {
     }
 
     /// Downloads a self-contained Python build (python-build-standalone).
+    /// Sets up the private Python: a self-contained build from GitHub, or, if
+    /// that download fails (GitHub's file servers sometimes time out), a
+    /// private environment made from a Python already on this Mac.
     private func installPython() async throws {
+        do {
+            try await downloadPython()
+        } catch {
+            guard let local = Self.localPython() else { throw error }
+            activity = "GitHub isn't responding; using the Python on this Mac…"
+            try? FileManager.default.removeItem(at: Paths.bin.appendingPathComponent("python"))
+            let r = await Shell.run(local, ["-m", "venv", Paths.bin.appendingPathComponent("python").path])
+            guard r.ok, hasManagedPython else { throw error }
+        }
+    }
+
+    /// A python3 (3.9 or newer) from python.org or Homebrew. Skips
+    /// /usr/bin/python3, which can pop up an install prompt.
+    private static func localPython() -> String? {
+        let fm = FileManager.default
+        var candidates = ["/opt/homebrew/bin/python3", "/usr/local/bin/python3"]
+        let framework = "/Library/Frameworks/Python.framework/Versions"
+        let versions = ((try? fm.contentsOfDirectory(atPath: framework)) ?? []).filter { $0.hasPrefix("3.") }
+            .sorted { $0.compare($1, options: .numeric) == .orderedDescending }
+        candidates = versions.map { "\(framework)/\($0)/bin/python3" } + candidates
+        return candidates.first { path in
+            guard fm.isExecutableFile(atPath: path) else { return false }
+            let minor = URL(fileURLWithPath: path).resolvingSymlinksInPath().path
+                .components(separatedBy: "/").compactMap { c -> Int? in
+                    c.hasPrefix("3.") ? Int(c.dropFirst(2)) : (c.hasPrefix("python3.") ? Int(c.dropFirst(8)) : nil)
+                }.first
+            return (minor ?? 9) >= 9
+        }
+    }
+
+    private func downloadPython() async throws {
         #if arch(arm64)
         let arch = "aarch64"
         #else
@@ -356,6 +396,18 @@ enum Verified {
         var sha256: String
     }
 
+    struct ServerTrouble: LocalizedError {
+        var name: String
+        var host: String
+        var status: Int
+        var errorDescription: String? {
+            let who = host.contains("github") ? "GitHub's download server" : "The download server (\(host))"
+            return status >= 500
+                ? "\(who) isn't responding right now (error \(status)), so \(name) couldn't be downloaded. This is on their side; try again in a few minutes."
+                : "\(who) refused the \(name) download (error \(status)). Try again later."
+        }
+    }
+
     /// The newest release file whose name matches, with the SHA-256 that
     /// GitHub records for it.
     static func githubAsset(_ repo: String, matching match: (String) -> Bool) async throws -> Asset {
@@ -375,10 +427,30 @@ enum Verified {
     /// Downloads to a temporary file, checks the fingerprint, then moves it
     /// into place. A mismatch deletes the download.
     static func download(_ url: URL, sha256 expected: String, to dest: URL, name: String) async throws {
-        let (tmp, response) = try await URLSession.shared.download(from: url)
+        // GitHub's file servers sometimes time out (504); try a few times.
+        var attempt = 0
+        var fetched: (URL, URLResponse)?
+        while fetched == nil {
+            attempt += 1
+            do {
+                let (file, response) = try await URLSession.shared.download(from: url)
+                let status = (response as? HTTPURLResponse)?.statusCode ?? 200
+                if status >= 500 && attempt < 3 {
+                    try? FileManager.default.removeItem(at: file)
+                    try await Task.sleep(nanoseconds: UInt64(attempt) * 3_000_000_000)
+                    continue
+                }
+                fetched = (file, response)
+            } catch let error as URLError where attempt < 3 && [.timedOut, .networkConnectionLost, .cannotConnectToHost].contains(error.code) {
+                try await Task.sleep(nanoseconds: UInt64(attempt) * 3_000_000_000)
+            }
+        }
+        let (tmp, response) = fetched!
         let fm = FileManager.default
         defer { try? fm.removeItem(at: tmp) }
-        if let http = response as? HTTPURLResponse, http.statusCode != 200 { throw URLError(.badServerResponse) }
+        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+            throw ServerTrouble(name: name, host: url.host ?? "the server", status: http.statusCode)
+        }
         guard try sha256(of: tmp) == expected.lowercased() else { throw Failure(name: name) }
         if fm.fileExists(atPath: dest.path) { try fm.removeItem(at: dest) }
         try fm.moveItem(at: tmp, to: dest)

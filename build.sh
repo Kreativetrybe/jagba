@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP=build/JAGBA.app
-VERSION=2.0
+VERSION=2.0.1
 # The GitHub repository the app checks for new releases ("owner/name").
 REPO="${JAGBA_REPO:-Kreativetrybe/jagba}"
 rm -rf build && mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
