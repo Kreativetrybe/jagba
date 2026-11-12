@@ -1,6 +1,6 @@
 .DS_Store
 build/
-screens/
+/screens/
 # design drafts; keep only the letter outlines the wordmark is generated from
 design/*
 !design/ojuju-glyphs.json

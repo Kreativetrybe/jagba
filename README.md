@@ -3,6 +3,22 @@
 ![JAGBA](docs/wordmark.svg)
 
 Save just the part of a video you need, for research, teaching and quoting what was said.
+
+**[Download for Mac](../../releases/latest/download/JAGBA-mac.zip)** · macOS 14 or newer · free
+
+![The JAGBA window: a YouTube lecture is loaded, a 32-second clip is selected on the timeline, and the clip is downloading](docs/screens/hero.png)
+
+## How it works
+
+![How it works: 1. Paste a link. 2. Choose what to save: Video, Audio, Transcript or Whole post. 3. Pick the part you need on the timeline. 4. Download, and find the files in your Downloads folder.](docs/screens/how-it-works.png)
+
+1. **Paste a link** from YouTube, TikTok, Instagram, X or Vimeo, or paste several at once.
+2. **Choose what to save**: Video, Audio, Transcript or Whole post.
+3. **Pick the part you need**: drag the handles or type the times. Only that part is downloaded.
+4. **Download**: files land in your Downloads folder.
+
+## What it saves
+
 Paste a YouTube, TikTok, Instagram, X or Vimeo link, or a link from any other site yt-dlp supports, then choose what to save:
 
 - **Video**: the whole video, or only a clip. For a clip, JAGBA downloads just that section, not the whole video.
@@ -78,6 +94,7 @@ Needs the Xcode command-line tools.
 ```
 ./build.sh               # builds build/JAGBA.app and build/JAGBA-<version>.zip
 ./tools/snapshots.sh     # draws every screen to build/screens/ with sample data
+swift tools/make-readme-images.swift   # then makes docs/screens/ (hero and how-it-works images) from them
 node tools/make-wordmark.js && ./tools/make-icon.sh   # regenerate the wordmark and icon
 ./tools/release.sh       # build and publish a GitHub release (needs the gh CLI)
 ```

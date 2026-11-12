@@ -7,7 +7,7 @@
 <meta name="description" content="Save just the part you need: a clip, the audio, a transcript, or a whole Instagram post. Free for Mac.">
 <meta property="og:title" content="JAGBA for Mac">
 <meta property="og:description" content="Save just the part you need: a clip, the audio, a transcript, or a whole post.">
-<meta property="og:image" content="screenshot.png">
+<meta property="og:image" content="screens/hero.png">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
@@ -41,8 +41,21 @@ a { color: var(--butter); }
 .phone p { margin: 4px 0 12px; font-size: 14px; color: var(--muted); }
 .phone button { font: 600 14px var(--sans); color: var(--ink); background: var(--butter); border: 0; border-radius: 6px; padding: 9px 16px; cursor: pointer; }
 
-.shot { margin: 30px 0 64px; }
-.shot img { width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 0 0 1px rgba(217,203,184,.08), 0 30px 60px rgba(0,0,0,.5); }
+/* The hero image carries its own window frame and backdrop. */
+.shot { margin: 18px -40px 40px; position: relative; }
+.shot::before { content: ""; position: absolute; inset: -10% -20%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side at 62% 42%, rgba(168,57,42,.26), transparent),
+              radial-gradient(closest-side at 28% 85%, rgba(210,180,140,.08), transparent); }
+.shot img { width: 100%; height: auto; display: block; }
+body { overflow-x: hidden; }
+
+/* How it works: text beside each screen, stacked on phones. */
+.how { list-style: none; padding: 0; margin: 0; }
+.how li { display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: start; padding: 26px 0; border-top: 1px solid var(--line); }
+.how .n { font-family: var(--mono); color: var(--butter); font-size: 15px; }
+.how h3 { margin: 4px 0 6px; font-size: 18px; font-weight: 600; color: var(--bright); }
+.how p { margin: 0; color: var(--muted); font-size: 15px; }
+.how img { width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 0 0 1px rgba(217,203,184,.10), 0 18px 40px rgba(0,0,0,.35); }
 
 section { padding: 0 0 56px; }
 h2 { font-size: 22px; font-weight: 600; color: var(--bright); margin: 6px 0 18px; }
@@ -78,8 +91,12 @@ details p { color: var(--muted); margin: 8px 0 0 22px; }
 .small { font-size: 14px; color: var(--muted); }
 footer { border-top: 1px solid var(--line); padding: 26px 0 60px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
+@media (max-width: 900px) {
+  .shot { margin: 18px 0 40px; }
+}
 @media (max-width: 640px) {
   .hero { padding-top: 48px; }
+  .how li { grid-template-columns: 1fr; gap: 14px; }
   .features { grid-template-columns: 1fr; }
   .browsers td:first-child { width: 42%; }
 }
@@ -102,7 +119,30 @@ footer { border-top: 1px solid var(--line); padding: 26px 0 60px; font-size: 13p
     <p class="notice" id="notice">Preview copy: the download button works once this page is published on GitHub Pages.</p>
   </header>
 
-  <div class="shot"><img src="screenshot.png" alt="JAGBA with a YouTube video loaded and a 30-second clip selected on the timeline"></div>
+  <div class="shot"><img src="screens/hero.png" alt="The JAGBA window: a YouTube lecture is loaded, a 32-second clip is selected on the timeline, and the clip is downloading"></div>
+
+  <section>
+    <div class="label">How it works</div>
+    <h2>From link to file in four steps</h2>
+    <ol class="how">
+      <li>
+        <div><span class="n">01</span><h3>Paste a link</h3><p>Copy a link from YouTube, TikTok, Instagram, X or Vimeo and paste it in. Got a pile of them? Paste several at once.</p></div>
+        <img src="screens/step-1.png" alt="JAGBA's start screen with a box to paste a link" loading="lazy">
+      </li>
+      <li>
+        <div><span class="n">02</span><h3>Choose what to save</h3><p>Video, Audio (MP3 or M4A), Transcript (.txt and .srt), or Whole post: every slide of an Instagram carousel.</p></div>
+        <img src="screens/step-2.png" alt="The Video, Audio, Transcript and Whole post tabs, with Whole post ready to save 6 slides" loading="lazy">
+      </li>
+      <li>
+        <div><span class="n">03</span><h3>Pick the part you need</h3><p>Drag the handles or type the times. JAGBA downloads only that part, not the whole video. Play clip shows exactly what you'll get.</p></div>
+        <img src="screens/step-3.png" alt="The clip timeline with in and out handles set to a 32-second section" loading="lazy">
+      </li>
+      <li>
+        <div><span class="n">04</span><h3>Download</h3><p>Files land in your Downloads folder. Open them or show them in Finder, and queue up as many as you like.</p></div>
+        <img src="screens/step-4.png" alt="The downloads list: one clip downloading, one transcript waiting, and a saved 6-slide post" loading="lazy">
+      </li>
+    </ol>
+  </section>
 
   <section>
     <div class="label">What it does</div>
