@@ -198,6 +198,7 @@ struct Segmented<T: Hashable>: View {
                         .foregroundStyle(selection == value ? Theme.bone : Theme.muted)
                         .padding(.horizontal, 12).padding(.vertical, 5)
                         .background(selection == value ? Theme.bone.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 4))
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }
@@ -223,6 +224,8 @@ struct CheckboxStyle: ToggleStyle {
                 .frame(width: 14, height: 14)
                 configuration.label.font(.system(size: 13)).foregroundStyle(Theme.bone)
             }
+            // The empty box is see-through, so make the whole row clickable.
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
