@@ -375,11 +375,22 @@ extension AppModel {
 
     /// Whether a site refused because it wants you logged in.
     nonisolated static func looksLikeLoginWall(_ output: String) -> Bool {
-        let lower = output.lowercased()
+        let lower = errorText(output)
         let signs = ["login required", "log in", "login", "sign in", "--cookies", "use cookies", "private video",
-                     "age-restricted", "confirm your age", "not a bot", "empty media response", "401",
-                     "registered users", "members-only", "requires authentication"]
+                     "age-restricted", "confirm your age", "not a bot", "empty media response", "error 401",
+                     "401 unauthorized", "registered users", "members-only", "requires authentication"]
         return signs.contains { lower.contains($0) }
+    }
+
+    /// The lines that say what went wrong, lowercased and without links.
+    /// Clip downloads print long media links whose numbers and letters can
+    /// contain "401" or "login" by chance, which made other errors look like
+    /// a login wall.
+    nonisolated static func errorText(_ output: String) -> String {
+        let lines = output.split(separator: "\n").map { String($0).lowercased() }
+        let errors = lines.filter { $0.contains("error") || $0.contains("forbidden") || $0.contains("unauthorized") }
+        let text = (errors.isEmpty ? Array(lines.suffix(1)) : errors).joined(separator: "\n")
+        return text.replacingOccurrences(of: #"https?://\S+"#, with: "<link>", options: .regularExpression)
     }
 
     /// Turns tool error output into something a person can act on.
@@ -388,7 +399,7 @@ extension AppModel {
         let raw = lines.last { $0.hasPrefix("ERROR:") || $0.contains("[error]") }
             .map { $0.replacingOccurrences(of: "ERROR: ", with: "") }
             ?? lines.last ?? "Unknown error"
-        let lower = stderr.lowercased()
+        let lower = errorText(stderr)
         let pickBrowser = "Choose the browser you're logged in with under “Use login from”, then try again."
         if lower.contains("could not find") && lower.contains("cookies database") {
             return "JAGBA couldn't read that browser's logins. macOS may be blocking access (Chrome and Safari need Full Disk Access for JAGBA), or you're not logged in to that browser. Pick a browser marked as ready under “Use login from”, then try again.\n\n" + raw
@@ -409,7 +420,7 @@ extension AppModel {
             return "This site wants you to be logged in. \(pickBrowser)\n\n" + raw
         }
         if lower.contains("403") || lower.contains("unable to extract") || lower.contains("please report this issue") {
-            return "The site may have changed. Try “Update yt-dlp” (or switch to the nightly channel in Settings), then try again.\n\n" + raw
+            return "The site refused the download. Click Retry. If it keeps failing, the site may have changed: try “Update yt-dlp” (or switch to the nightly channel in Settings), then try again.\n\n" + raw
         }
         if lower.contains("ffmpeg") && lower.contains("not found") {
             return "ffmpeg is missing. Use “Install ffmpeg” at the top of the window.\n\n" + raw
